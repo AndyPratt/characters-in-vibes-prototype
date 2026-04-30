@@ -175,6 +175,7 @@
     -webkit-overflow-scrolling: touch;
   }
   .featured-scroll::-webkit-scrollbar { display: none; }
+  .featured-scroll { cursor: grab; }
   .featured-card {
     flex-shrink: 0;
     display: flex;
@@ -835,6 +836,41 @@ tabContent.addEventListener('touchend', e => {
   const current = tabs.indexOf(document.querySelector('.seg-btn.active').dataset.tab);
   if (diff < 0 && current < tabs.length - 1) activateTab(tabs[current + 1]);
   if (diff > 0 && current > 0) activateTab(tabs[current - 1]);
+});
+
+// Mouse drag-to-scroll for featured carousel
+document.querySelectorAll('.featured-scroll').forEach(scroll => {
+  let isDown = false, dragStartX, scrollStart, hasDragged;
+
+  scroll.addEventListener('mousedown', e => {
+    isDown = true;
+    hasDragged = false;
+    dragStartX = e.pageX;
+    scrollStart = scroll.scrollLeft;
+    scroll.style.cursor = 'grabbing';
+    scroll.style.userSelect = 'none';
+  });
+
+  scroll.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const dx = e.pageX - dragStartX;
+    if (Math.abs(dx) > 3) hasDragged = true;
+    scroll.scrollLeft = scrollStart - dx;
+  });
+
+  const stop = () => {
+    if (!isDown) return;
+    isDown = false;
+    scroll.style.cursor = '';
+    scroll.style.userSelect = '';
+    if (hasDragged) {
+      scroll.addEventListener('click', e => e.preventDefault(), { once: true, capture: true });
+    }
+  };
+
+  scroll.addEventListener('mouseup', stop);
+  scroll.addEventListener('mouseleave', stop);
 });
 
 </script>
