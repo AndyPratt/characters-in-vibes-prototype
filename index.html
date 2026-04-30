@@ -311,6 +311,169 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* Detail screen */
+  .detail-screen {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .detail-screen.open { transform: translateX(0); }
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    height: 52px;
+    flex-shrink: 0;
+    position: relative;
+    margin-top: 62px;
+  }
+  .detail-back {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 999px;
+    background: var(--fill-blur-thick);
+    backdrop-filter: blur(20px);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02), 0 8px 40px rgba(0,0,0,0.08);
+  }
+  .detail-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .detail-avatar-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 8px;
+  }
+  .detail-avatar {
+    width: 160px; height: 160px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+  .detail-section {
+    padding: 12px 20px;
+  }
+  .detail-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .detail-toggle-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .detail-toggle-icon {
+    width: 32px; height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+  }
+  .detail-toggle-text {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 20px;
+  }
+  .detail-switch {
+    flex-shrink: 0;
+    width: 51px; height: 31px;
+    border-radius: 16px;
+    background: #34C759;
+    position: relative;
+    border: none;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .detail-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 22px;
+    width: 27px; height: 27px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: left 0.2s;
+  }
+  .detail-switch.off { background: rgba(255,255,255,0.16); }
+  .detail-switch.off::after { left: 2px; }
+  .detail-input {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    margin-top: 4px;
+  }
+  .detail-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    min-height: 120px;
+    margin-top: 4px;
+  }
+  .detail-footer {
+    margin-top: auto;
+    padding: 12px 16px 24px;
+    flex-shrink: 0;
+  }
+  .detail-footer-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 16px;
+  }
+  .detail-footer-note a {
+    color: #1793ff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .detail-save-btn {
+    width: 100%;
+    padding: 12px;
+    background: #1793ff;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: -0.3px;
+  }
 </style>
 </head>
 <body>
@@ -410,6 +573,54 @@
     </div>
   </div>
   <div class="toast" id="toast"></div>
+
+  <!-- Edit Character detail screen -->
+  <div class="detail-screen" id="detailScreen">
+    <div class="detail-header">
+      <button class="detail-back" id="detailBack" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="detail-title">Edit Character</span>
+    </div>
+
+    <div class="detail-avatar-wrap">
+      <img class="detail-avatar" id="detailAvatar" src="" alt="">
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Allow voice chats</div>
+      <div class="detail-toggle-row">
+        <div class="detail-toggle-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="6" width="2" height="12" rx="1" fill="white"/>
+            <rect x="8" y="3" width="2" height="18" rx="1" fill="white"/>
+            <rect x="12" y="8" width="2" height="8" rx="1" fill="white"/>
+            <rect x="16" y="5" width="2" height="14" rx="1" fill="white"/>
+            <rect x="20" y="9" width="2" height="6" rx="1" fill="white"/>
+          </svg>
+        </div>
+        <div class="detail-toggle-text">Enable your character to voice chat with viewers and generate stories about its world.</div>
+        <button class="detail-switch" id="detailSwitch" onclick="this.classList.toggle('off')"></button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Name</div>
+      <input class="detail-input" id="detailName" type="text" value="">
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Personality</div>
+      <textarea class="detail-textarea" id="detailPersonality"></textarea>
+    </div>
+
+    <div class="detail-footer">
+      <div class="detail-footer-note">When saving edits to the character, you agree to the <a href="#">AI Studio creation policies</a>.</div>
+      <button class="detail-save-btn" onclick="closeDetail()">Save</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -508,10 +719,37 @@ function renderMyAIs() {
   container.innerHTML = '';
   allCharacters.forEach((c, i) => {
     const row = buildRow(c, caretRightSVG, 'rgba(241,246,255,0.38)', false);
+    row.querySelector('.action-btn').addEventListener('click', () => openDetail(c));
     container.appendChild(row);
     if (i < allCharacters.length - 1) container.appendChild(addDivider());
   });
 }
+
+const personalities = {
+  "Captain Panda Luxe": "A natural leader of undeniable charisma, they blend an authoritative presence with a highly developed sense of taste and style",
+  "Fitness Hammy": "An energetic and motivational fitness enthusiast who never skips leg day and always brings the hype to every workout",
+  "Fuzz Bubbles": "A curious and playful creature with an infectious laugh, always finding wonder in the smallest things around them",
+  "Groove": "A funky music lover with impeccable rhythm, always ready to drop a beat and get the party started",
+  "Caterton IV": "A distinguished feline of refined tastes, known for their sharp wit and aristocratic demeanor",
+  "Sir Hoppsalot": "A gallant and adventurous rabbit knight, brave of heart and swift of foot, always ready for a noble quest",
+};
+
+function openDetail(c) {
+  document.getElementById('detailAvatar').src = c.avatar;
+  document.getElementById('detailAvatar').alt = c.name;
+  document.getElementById('detailName').value = c.name;
+  document.getElementById('detailPersonality').value = personalities[c.name] || '';
+  document.getElementById('detailSwitch').classList.remove('off');
+  requestAnimationFrame(() => {
+    document.getElementById('detailScreen').classList.add('open');
+  });
+}
+
+function closeDetail() {
+  document.getElementById('detailScreen').classList.remove('open');
+}
+
+document.getElementById('detailBack').addEventListener('click', closeDetail);
 
 function animateRemoveRow(rowWrap, cb) {
   const prev = rowWrap.previousElementSibling;
